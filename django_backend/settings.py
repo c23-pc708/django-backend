@@ -31,6 +31,7 @@ DEBUG = os.environ["DEBUG"]
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [os.environ["TRUSTED_CSRF"]]
 
 # Application definition
 
