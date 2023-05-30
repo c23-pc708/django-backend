@@ -2,9 +2,11 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from django_backend.utils import validate_body
+from django.contrib.auth import authenticate
 
 # Create your views here.
 
@@ -35,7 +37,7 @@ def register(request):
     password = request.data.get("password")
     phone_number = request.data.get("phone_number")
 
-    user = User.objects.create(
+    user = User.objects.create_user(
         username=username,
         first_name=first_name,
         last_name=last_name,
@@ -50,8 +52,40 @@ def register(request):
     )
 
 
+@api_view(["POST"])
+@permission_classes([AllowAny])
 def login(request):
-    pass
+    is_valid = validate_body(request, ["username", "password"])
+
+    if is_valid != None:
+        return is_valid
+
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+
+        tokens = {
+            "access": str(access),
+            "refresh": str(refresh),
+        }
+
+        data = get_user_data(user)
+        data["tokens"] = tokens
+
+        response = Response(data=data, status=status.HTTP_200_OK)
+        response.set_cookie(
+            key="refresh_token", value=str(refresh), httponly=True, samesite="Lax"
+        )
+        return response
+    else:
+        return Response(
+            data={"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+        )
 
 
 def logout(request):
@@ -61,13 +95,14 @@ def logout(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_user(request):
-    user = request.user
-    return Response(
-        data={
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "username": user.username,
-            "email": user.email,
-            "phone_number": user.userprofile.phone_number,
-        }
-    )
+    return Response(data=get_user_data(request.user))
+
+
+def get_user_data(user):
+    return {
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "username": user.username,
+        "email": user.email,
+        "phone_number": user.userprofile.phone_number,
+    }
