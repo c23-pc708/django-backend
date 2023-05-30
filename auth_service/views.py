@@ -88,8 +88,21 @@ def login(request):
         )
 
 
+@api_view(["POST"])
 def logout(request):
-    pass
+    try:
+        token = request.COOKIES.get("refresh_token")
+        print(f"Token: {token}")
+        token = RefreshToken(token)
+        token.blacklist()
+        return Response(
+            data={"message": "Logged out successfully"}, status=status.HTTP_200_OK
+        )
+    except Exception as e:
+        return Response(
+            data={"message": "Logout failed", "error": str(e)},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
 
 
 @api_view(["GET"])
