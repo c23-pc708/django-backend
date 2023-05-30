@@ -24,7 +24,9 @@ def register(request):
         User.objects.filter(username=request.data.get("username")).exists()
         or User.objects.filter(email=request.data.get("email")).exists()
     ):
-        return Response(data="User already exists", status=status.HTTP_409_CONFLICT)
+        return Response(
+            data={"message": "User already exists"}, status=status.HTTP_409_CONFLICT
+        )
 
     username = request.data.get("username")
     first_name = request.data.get("first_name")
@@ -43,7 +45,9 @@ def register(request):
     user_profile = user.userprofile
     user_profile.phone_number = phone_number
     user_profile.save()
-    return Response(data="Registration successful", status=status.HTTP_201_CREATED)
+    return Response(
+        data={"message": "Registration successful"}, status=status.HTTP_201_CREATED
+    )
 
 
 def login(request):
@@ -54,5 +58,16 @@ def logout(request):
     pass
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def get_user(request):
-    pass
+    user = request.user
+    return Response(
+        data={
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "username": user.username,
+            "email": user.email,
+            "phone_number": user.userprofile.phone_number,
+        }
+    )
