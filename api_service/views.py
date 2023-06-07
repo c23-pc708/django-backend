@@ -14,15 +14,17 @@ def destinations(request):
             {
                 "destinationId": 1,
                 "name": "destination one",
-                "type": ["food", "sightseeing"],
+                "type": "Art",
                 "location": "Kuta",
+                "opening_type": "10.00-15.00",
                 "description": "asdjfalskdj falskdjhf lkash jdlfkajsh dlfkajsh dlkfjah sdlkfjah sklf",
             },
             {
                 "destinationId": 2,
                 "name": "the second destination",
-                "type": ["food", "sightseeing"],
+                "type": "Entertainment",
                 "location": "Pantai Kuta",
+                "opening_time": "10.00-15.00",
                 "description": "asdjfalskdj falskdjhf lkash jdlfkajsh dlfkajsh dlkfjah sdlkfjah sklf",
             },
         ]
@@ -36,8 +38,9 @@ def destination_detail(request, destination_id):
         data={
             "destinationId": 1,
             "name": "destination one",
-            "type": ["food", "sightseeing"],
+            "type": "Art",
             "location": "Kuta",
+            "opening_time": "10.00-15.00",
             "description": "asdjfalskdj falskdjhf lkash jdlfkajsh dlfkajsh dlkfjah sdlkfjah sklf",
         },
     )

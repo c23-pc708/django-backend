@@ -10,10 +10,5 @@ class Destination(models.Model):
     # https://stackoverflow.com/questions/22340258/list-field-in-model
     type = models.CharField(max_length=200)
     location = models.CharField(max_length=100)
+    opening_time = models.CharField(max_length=100)
     description = models.CharField(max_length=2000)
-
-    def set_type(self, types):
-        self.type = json.dumps(types)
-
-    def get_type(self):
-        return json.loads(self.type)
