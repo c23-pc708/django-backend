@@ -1,4 +1,3 @@
-from django.core import serializers
 from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -62,6 +61,5 @@ def destinations(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def destination_detail(request, destination_id):
-    dest = Destination.objects.filter(id=destination_id)
-    dest = serializers.serialize("json", dest)
-    return Response(data=json.loads(dest))
+    dest = Destination.objects.filter(id=destination_id).values()[0]
+    return Response(data=dest)
