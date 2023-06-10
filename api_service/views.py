@@ -44,13 +44,6 @@ def destinations(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def destination_detail(request, destination_id):
-    return Response(
-        data={
-            "destinationId": 1,
-            "name": "destination one",
-            "type": "Art",
-            "location": "Kuta",
-            "opening_time": "10.00-15.00",
-            "description": "asdjfalskdj falskdjhf lkash jdlfkajsh dlfkajsh dlkfjah sdlkfjah sklf",
-        },
-    )
+    dest = Destination.objects.filter(id=destination_id)
+    dest = serializers.serialize("json", dest)
+    return Response(data=json.loads(dest))
