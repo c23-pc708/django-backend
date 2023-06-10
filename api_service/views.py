@@ -37,8 +37,27 @@ def destinations(request):
     if shopping is not None:
         dest = dest.filter(shopping=1)
 
-    dest_list = serializers.serialize("json", dest)
-    return Response(data=json.loads(dest_list))
+    dest = dest.values(
+        "id",
+        "name",
+        "art",
+        "entertainment",
+        "sightings",
+        "culinary",
+        "shopping",
+        "image_link",
+        "location",
+        "description",
+        "weekdays_time",
+        "weekend_time",
+        "lowest_price",
+        "highest_price",
+        "rating",
+        "location_link",
+    )
+    print(dest)
+    dest_list = list(dest)
+    return Response(data=dest_list)
 
 
 @api_view(["GET"])
