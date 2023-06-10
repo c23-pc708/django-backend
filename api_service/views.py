@@ -11,8 +11,11 @@ import json
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def destinations(request):
-    print("test")
     dest = Destination.objects.all()
+
+    search = request.query_params.get("q")
+    if search is not None:
+        dest = dest.filter(name__icontains=search)
 
     art = request.query_params.get("art")
     if art is not None:
