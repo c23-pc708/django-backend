@@ -55,7 +55,6 @@ def destinations(request):
         "rating",
         "location_link",
     )
-    print(dest)
     dest_list = list(dest)
     return Response(data=dest_list)
 
