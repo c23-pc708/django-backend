@@ -62,7 +62,8 @@ def destinations(request):
 @permission_classes([AllowAny])
 def destination_detail(request, destination_id):
     try:
-        dest = Destination.objects.get(id=destination_id).values()
-        return Response(data=dest[0])
+        dest = Destination.objects.get(id=destination_id)
+        dest = Destination.objects.filter(id=destination_id).values()[0]
+        return Response(data=dest)
     except Destination.DoesNotExist:
         return Response(status=404, data={"message": "Destination not found."})
