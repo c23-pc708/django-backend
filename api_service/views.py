@@ -11,32 +11,48 @@ import json
 @permission_classes([AllowAny])
 def destinations(request):
     dest = Destination.objects.all()
-
-    search = request.query_params.get("q")
-    if search is not None:
-        dest = dest.filter(name__icontains=search)
+    exist_params = False
+    dest_result = Destination.objects.none()
 
     art = request.query_params.get("art")
     if art is not None:
-        dest = dest.filter(art=1)
+        exist_params = True
+        dest_art = dest.filter(art=1)
+        dest_result = dest_result.union(dest_art)
 
     entertainment = request.query_params.get("entertainment")
     if entertainment is not None:
-        dest = dest.filter(entertainment=1)
+        exist_params = True
+        dest_ent = dest.filter(entertainment=1)
+        dest_result = dest_result.union(dest_ent)
 
     sightings = request.query_params.get("sightings")
     if sightings is not None:
-        dest = dest.filter(sightings=1)
+        exist_params = True
+        dest_sgt = dest.filter(sightings=1)
+        dest_result = dest_result.union(dest_sgt)
 
     culinary = request.query_params.get("culinary")
     if culinary is not None:
-        dest = dest.filter(culinary=1)
+        exist_params = True
+        dest_cul = dest.filter(culinary=1)
+        dest_result = dest_result.union(dest_cul)
 
     shopping = request.query_params.get("shopping")
     if shopping is not None:
-        dest = dest.filter(shopping=1)
+        exist_params = True
+        dest_shp = dest.filter(shopping=1)
+        dest_result = dest_result.union(dest_shp)
 
-    dest = dest.values(
+    search = request.query_params.get("q")
+    if search is not None:
+        exist_params = True
+        dest_result = dest.filter(name__icontains=search)
+
+    if not exist_params:
+        dest_result = dest
+
+    dest = dest_result.values(
         "id",
         "name",
         "art",
