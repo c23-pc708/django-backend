@@ -15,31 +15,31 @@ def destinations(request):
     dest_result = Destination.objects.none()
 
     art = request.query_params.get("art")
-    if art is not None:
+    if art is not None and int(art) == 1:
         exist_params = True
         dest_art = dest.filter(art=1)
         dest_result = dest_result.union(dest_art)
 
     entertainment = request.query_params.get("entertainment")
-    if entertainment is not None:
+    if entertainment is not None and int(entertainment) == 1:
         exist_params = True
         dest_ent = dest.filter(entertainment=1)
         dest_result = dest_result.union(dest_ent)
 
     sightings = request.query_params.get("sightings")
-    if sightings is not None:
+    if sightings is not None and int(sightings) == 1:
         exist_params = True
         dest_sgt = dest.filter(sightings=1)
         dest_result = dest_result.union(dest_sgt)
 
     culinary = request.query_params.get("culinary")
-    if culinary is not None:
+    if culinary is not None and int(culinary) == 1:
         exist_params = True
         dest_cul = dest.filter(culinary=1)
         dest_result = dest_result.union(dest_cul)
 
     shopping = request.query_params.get("shopping")
-    if shopping is not None:
+    if shopping is not None and int(shopping) == 1:
         exist_params = True
         dest_shp = dest.filter(shopping=1)
         dest_result = dest_result.union(dest_shp)
