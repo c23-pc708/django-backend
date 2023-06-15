@@ -3,7 +3,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from .models import Destination
+from tensorflow.keras.models import load_model
+
 import json
+import os
 
 
 # Create your views here.
@@ -83,3 +86,27 @@ def destination_detail(request, destination_id):
         return Response(data=dest)
     except Destination.DoesNotExist:
         return Response(status=404, data={"message": "Destination not found."})
+
+
+def mult(a, b):
+    recommend = []
+    for i in range(1):
+        c = []
+        for j in range(len(b)):
+            c.append(tf.tensordot(a[i], b[j], axes=1))
+        recommend.append(c)
+    return tf.convert_to_tensor(recommend)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def predict(request):
+    ratings = request.data.get("ratings")
+    print(len(ratings))
+    print(ratings)
+
+    model = load_model("Model.h5")
+
+    prediction = model.predict(ratings)
+
+    return Response(data={"message": "test"})
