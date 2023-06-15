@@ -102,7 +102,7 @@ def mult(a, b):
     return tf.convert_to_tensor(recommend)
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def predict(request):
     ratings = request.data.get("ratings")
