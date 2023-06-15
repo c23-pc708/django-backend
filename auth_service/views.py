@@ -118,4 +118,23 @@ def get_user_data(user):
         "username": user.username,
         "email": user.email,
         "phone_number": user.userprofile.phone_number,
+        "ratings": user.userprofile.get_ratings(),
     }
+
+
+@api_view(["POST"])
+def rating_handler(request):
+    user = request.user
+    dest_id = (
+        int(request.query_params.get("destId")) - 1
+    )  # subtract by one to adjust to zero-based indexing
+    new_rating = request.query_params.get("rating")
+
+    user_profile = user.userprofile
+    ratings = user_profile.get_ratings()
+
+    ratings[dest_id] = int(new_rating)
+    user_profile.set_ratings(ratings)
+
+    user_profile.save()
+    return Response(data={"Message": "rating saved successfully"})
