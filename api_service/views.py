@@ -3,7 +3,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from .models import Destination
-from tensorflow.keras.models import load_model
+
+
+import tensorflow as tf
+import pandas as pd
+import numpy as np
 
 import json
 import os
@@ -102,11 +106,18 @@ def mult(a, b):
 @permission_classes([AllowAny])
 def predict(request):
     ratings = request.data.get("ratings")
-    print(len(ratings))
-    print(ratings)
 
-    model = load_model("Model.h5")
+    ratings = np.array(ratings)
+    ratings = np.expand_dims(ratings, axis=0)
 
+    model = tf.keras.saving.load_model("Model.h5", custom_objects={"mult": mult})
     prediction = model.predict(ratings)
 
-    return Response(data={"message": "test"})
+    result = prediction.tolist()[0]
+    indices = sorted(range(len(result)), key=lambda i: result[i], reverse=True)[:10]
+
+    dest_results = []
+    for i in indices:
+        dest_results.append(Destination.objects.filter(id=i).values()[0])
+
+    return Response(data=dest_results)
