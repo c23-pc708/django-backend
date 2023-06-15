@@ -45,7 +45,7 @@ def destinations(request):
         dest_result = dest_result.union(dest_shp)
 
     search = request.query_params.get("q")
-    if search is not None:
+    if search is not None and len(search) > 0:
         exist_params = True
         dest_result = dest.filter(name__icontains=search)
 
